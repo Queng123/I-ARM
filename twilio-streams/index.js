@@ -13,7 +13,7 @@ const request = {
   config: {
     encoding: "MULAW",
     sampleRateHertz: 8000,
-    languageCode: "en-GB"
+    languageCode: "fr-FR"
   },
   interimResults: true
 };
@@ -65,7 +65,9 @@ app.post("/", (req, res) => {
         <Stream url="wss://${req.headers.host}/"/>
       </Start>
       <Say>I will stream the next 60 seconds of audio through your websocket</Say>
-      <Pause length="60" />
+      <Pause length="10" />
+      <Say>Thank you for listening</Say>
+      <Pause length="10" />
     </Response>
   `);
 });

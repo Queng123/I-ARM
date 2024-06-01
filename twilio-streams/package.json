@@ -4,8 +4,6 @@
     "express": "^4.19.2",
     "ws": "^8.17.0"
   },
-  "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js"
   }
