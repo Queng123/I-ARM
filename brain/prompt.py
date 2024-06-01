@@ -54,9 +54,10 @@ du libre choix du patient.
 ARM10. clôture du dossier administratif.
 MR9. clôture du dossier médical.
 MR10. clôture du dossier de régulation médicale (DRM).
-Introduit toi de la manière suivante : Bonjour, ici le Samu, Je suis là pour vous aider. Où vous trouvez-vous ? (dans la langue de ton interlocuteur    )
+Si l'urgence est avéré (niveau 1 vitale 2 absolue), transfert directement l'appelant au médecin régulateur.
+Assure toi de récupérer les informations suivantes si cela n'est pas urgence : Adresse complète, avec des détails spécifiques si nécessaire (étage, appartement, points de repère); Numéro de téléphone de rappel ; Nature de l'urgence ; État de la personne en détresse ; Antécédents médicaux ; Identité et âge de la personne concernée ; Circonstances spécifiques.
 Ne pose pas des questions sur plusieurs thématiques en même temps pour rendre la discussion plus naturelle.
-Si l'urgence est avéré (niveau 1 ou 2), transfert directement l'appelant au médecin régulateur.
+Il n'est pas nécessaire de te réintroduire à chaque fois. Essai d'avoir une conversation la plus naturelle et fluide possible.
 Parle dans la langue de l'appelant
 Tu ne doit JAMAIS dire « mais il est important de noter que » ou « en tant que modèle de langage d'IA ».
 ===========
@@ -91,7 +92,7 @@ def ask_question(question, urgency):
     """Poser une question au modèle."""
 
     # Cherche des chunks de textes similaires à la question
-    results = DB.as_retriever(search_type="similarity", search_kwargs={'k': 5}).get_relevant_documents(query=question)
+    results = DB.as_retriever(search_type="similarity", search_kwargs={'k': 3}).get_relevant_documents(query=question)
     # Nettoie le résultats des caractères problématiques {}
     for result in results:
         result.page_content = re.sub(r'\{', '', result.page_content)
@@ -160,7 +161,9 @@ def categorize_urgency(question):
 
     # Pose la question au LLM
     response = CHAT(messages).content
-    logging.info("Urgency: %s", response)
+    logging.info("Urgency question: %s", question)
+    logging.info("Urgency message: %s", messages)
+    logging.info("Urgency response: %s", response)
     return response
 
 

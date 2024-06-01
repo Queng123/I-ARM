@@ -48,7 +48,7 @@ if st.button('Clear cache'):
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "assistant",
-         "content": "Posez-moi des questions !"}]
+         "content": "Bonjour, ici le Samu, Je suis un chatbot et je suis là pour vous aider. Est-ce une urgence vitale ?"}]
 
 if "sentiment_history" not in st.session_state.keys():
     st.session_state.sentiment_history = []
