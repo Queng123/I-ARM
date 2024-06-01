@@ -17,6 +17,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 
 import constants
+import re
 
 # Configure le logger
 logging.basicConfig(format='%(levelname)s: %(message)s',
@@ -43,8 +44,15 @@ def store_embeddings(documents):
 
 def read_pdfs(directory):
     """Lit les documents PDF depuis un répertoire"""
-    logging.info("Chargement des fichiers depuis le répertoire %s", directory)
-    return PyPDFDirectoryLoader(directory).load_and_split()
+    documents = PyPDFDirectoryLoader(directory).load_and_split()
+
+    # Filtrer les pages à exclure
+    filtered_documents = []
+    for doc in documents:
+        if doc.metadata['page'] not in [181, 193]:
+            filtered_documents.append(doc)
+
+    return filtered_documents
 
 
 def read_words(directory):
