@@ -13,7 +13,7 @@ DOCUMENTS_DIR = os.environ.get("DOCUMENTS_DIR", "./documents")
 """Répertoire des documents à charger"""
 EMBEDDINGS_MODEL = os.environ.get("EMBEDDINGS_MODEL", "text-embedding-ada-002")
 """Modèle d'embeddings à utiliser"""
-MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-3.5-turbo-16k")
+MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-4o")
 """Nom du modèle à utiliser"""
 
 # Hyperparamètres
@@ -33,6 +33,4 @@ OPENAI_API_TYPE = os.environ.get("OPENAI_API_TYPE")
 OPENAI_DEPLOYMENT_NAME = os.environ.get("OPENAI_DEPLOYMENT_NAME", EMBEDDINGS_MODEL)
 """Nom du déploiement OpenAI (pour Azure)"""
 
-# os.environ["HTTP_PROXY"] = "ntes.proxy.corp.sopra:8080"
-# os.environ["HTTPS_PROXY"] = "ntes.proxy.corp.sopra:8080"
 """Configuration du proxy"""
