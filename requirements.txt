@@ -12,3 +12,4 @@ chromadb
 openai
 # interface
 streamlit
+streamlit-audiorecorder

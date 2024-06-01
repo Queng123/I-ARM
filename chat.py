@@ -4,6 +4,7 @@ import logging
 
 import streamlit as st
 from dotenv import load_dotenv
+from audiorecorder import audiorecorder
 
 from prompt import ask_question
 
@@ -21,15 +22,27 @@ st.set_page_config(layout="wide", page_title="POC")
 st.title("👨‍💼👩‍💼 ARM 💬")
 st.divider()
 st.markdown("""
-            
+
 * Posez vos questions en **français** pour interroger les documents en français
 * Posez vos questions en **anglais** pour interroger les documents en anglais
 """)
+
+audio = audiorecorder("Click to record", "Click to stop recording",pause_prompt="", show_visualizer=True, key=None)
+
+if len(audio) > 0:
+    st.audio(audio.export().read())
+
+    audio.export("audio.wav", format="wav")
+
+    # To get audio properties, use pydub AudioSegment properties:
+    st.write(f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
 
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "assistant",
          "content": "Posez-moi des questions !"}]
+
+
 
 # Display chat messages
 for message in st.session_state.messages:
