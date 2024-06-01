@@ -1,4 +1,5 @@
 import logging
+import re
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.prompts.chat import (ChatPromptTemplate,
                                     HumanMessagePromptTemplate,
@@ -6,6 +7,9 @@ from langchain.prompts.chat import (ChatPromptTemplate,
 from langchain.vectorstores import Chroma
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 import constants
+
+log_format = "%(asctime)s - %(levelname)s - %(message)s"
+logging.basicConfig(format=log_format, level=logging.INFO)
 
 # Import conditionnel selon si on est sur les API officielles d'OpenAI ou sur Azure.
 if constants.OPENAI_API_TYPE == "azure":
@@ -50,9 +54,10 @@ du libre choix du patient.
 ARM10. clôture du dossier administratif.
 MR9. clôture du dossier médical.
 MR10. clôture du dossier de régulation médicale (DRM).
-Introduit toi de la manière suivante : Bonjour, ici le Samu, Je suis là pour vous aider. Où vous trouvez-vous ?
+Introduit toi de la manière suivante : Bonjour, ici le Samu, Je suis là pour vous aider. Où vous trouvez-vous ? (dans la langue de ton interlocuteur    )
 Ne pose pas des questions sur plusieurs thématiques en même temps pour rendre la discussion plus naturelle.
-Si l'urgence est avéré, transfert directement l'appelant au médecin régulateur.
+Si l'urgence est avéré (niveau 1 ou 2), transfert directement l'appelant au médecin régulateur.
+Parle dans la langue de l'appelant
 Tu ne doit JAMAIS dire « mais il est important de noter que » ou « en tant que modèle de langage d'IA ».
 ===========
 Niveau d'urgence :
@@ -87,6 +92,10 @@ def ask_question(question, urgency):
 
     # Cherche des chunks de textes similaires à la question
     results = DB.as_retriever(search_type="similarity", search_kwargs={'k': 5}).get_relevant_documents(query=question)
+    # Nettoie le résultats des caractères problématiques {}
+    for result in results:
+        result.page_content = re.sub(r'\{', '', result.page_content)
+        result.page_content = re.sub(r'\}', '', result.page_content)
 
     logging.info("Sources: %s", results)
 
