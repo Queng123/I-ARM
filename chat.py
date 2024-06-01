@@ -23,11 +23,7 @@ st.set_page_config(layout="wide", page_title="POC")
 # Titre de l'application
 st.title("👨‍💼👩‍💼 ARM 💬")
 st.divider()
-st.markdown("""
 
-* Posez vos questions en **français** pour interroger les documents en français
-* Posez vos questions en **anglais** pour interroger les documents en anglais
-""")
 
 audio = audiorecorder("Click to record", "Click to stop recording",pause_prompt="", show_visualizer=True, key=None)
 
@@ -45,6 +41,9 @@ if len(audio) > 0:
 #     audio_data = r.record(source)
 #    text = r.recognize_google(audio_data, language='fr-FR')  # Utilisez 'en-US' pour l'anglais
 #   st.write(text)
+
+if st.button('Clear cache'):
+    st.session_state.clear()
 
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
