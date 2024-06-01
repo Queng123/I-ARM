@@ -72,3 +72,4 @@ pip3.12 install -r requirements.txt
 export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 python3.12 ingest.py 
 streamlit run chat.py
+
