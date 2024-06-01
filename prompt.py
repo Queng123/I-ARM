@@ -51,7 +51,7 @@ def ask_question(question):
     """Poser une question au modèle."""
 
     # Cherche des chunks de textes similaires à la question
-    results = DB.as_retriever(search_type="similarity", search_kwargs={'k': 10}).get_relevant_documents(query=question)
+    results = DB.as_retriever(search_type="similarity", search_kwargs={'k': 5}).get_relevant_documents(query=question)
 
     logging.debug("Sources: %s", results)
 
@@ -77,6 +77,49 @@ def ask_question(question):
     message_history.append(AIMessage(content=response))
 
     return response, results
+
+def sentiment_analysis(question):
+    """Analyser le sentiment d'une question avec le modèle."""
+
+    # Constitue la séquence de chat avec le conditionnement du bot et la question
+    # de l'utilisateur
+    system_message_prompt = SystemMessagePromptTemplate.from_template(
+        "Vous êtes un modèle de langage formé par OpenAI. Votre tâche est d'analyser le sentiment du texte suivant :")
+    human_message_prompt = HumanMessagePromptTemplate.from_template(
+        "{question}")
+    chat_prompt = ChatPromptTemplate.from_messages(
+        [system_message_prompt, human_message_prompt]
+    )
+    messages = chat_prompt.format_prompt(
+        question=question
+    ).to_messages()
+
+    # Pose la question au LLM
+    response = CHAT(messages).content
+
+    return response
+
+def categorize_urgency(question):
+    """Catégorise l'urgence d'un texte en fonction de sa similarité avec les descriptions des niveaux d'urgence."""
+    # Constitue la séquence de chat avec le conditionnement du bot et la question
+    # de l'utilisateur
+    system_message_prompt = SystemMessagePromptTemplate.from_template(
+        "Vous êtes un modèle de langage formé par OpenAI. Votre tâche est d'analyser le sentiment pour déterminer le niveau d'urgence sur une échelle de 1 à 5 : Niveau 1 : Urgence vitale, Niveau 2 : Urgence absolue, Niveau 3 : Urgence relative, Niveau 4 : Consultation médicale urgente, Niveau 5 : Consultation non urgente. Commence ta réponse par le niveau identifié")
+    human_message_prompt = HumanMessagePromptTemplate.from_template(
+        "{question}")
+    chat_prompt = ChatPromptTemplate.from_messages(
+        [system_message_prompt, human_message_prompt]
+    )
+    messages = chat_prompt.format_prompt(
+        question=question
+    ).to_messages()
+
+    # Pose la question au LLM
+    response = CHAT(messages).content
+
+    return response
+
+
 
 if __name__ == "__main__":
     print("""

@@ -1,0 +1,52 @@
+Niveau 1 : Urgence vitale
+Description :
+Situation mettant immédiatement en danger la vie de la personne.
+Nécessite une intervention immédiate des secours.
+Exemples :
+Arrêt cardiaque.
+Détresse respiratoire sévère.
+Hémorragie massive.
+Perte de connaissance prolongée.
+
+Niveau 2 : Urgence absolue
+Description :
+Situation grave nécessitant une intervention rapide pour éviter une aggravation de l'état du patient.
+L'intervention doit être réalisée dans les plus brefs délais, généralement dans l'heure.
+Exemples :
+Infarctus du myocarde suspecté.
+AVC (Accident Vasculaire Cérébral) avec symptômes en cours.
+Traumatisme sévère (accident de la route, chute importante).
+
+Niveau 3 : Urgence relative
+Description :
+Situation médicale sérieuse mais stable pour laquelle une intervention est nécessaire dans les heures à venir.
+Le patient est conscient et ses fonctions vitales ne sont pas immédiatement menacées.
+Exemples :
+Fracture osseuse sans complication majeure.
+Brûlure de second degré de taille modérée.
+Douleur abdominale intense d’origine non traumatique.
+
+Niveau 4 : Consultation médicale urgente
+Description :
+Situation médicale nécessitant une évaluation médicale rapide, mais ne mettant pas en danger immédiat la vie du patient.
+Peut nécessiter une prise en charge médicale dans les prochaines heures ou la journée.
+Exemples :
+Infection avec fièvre élevée et état général altéré.
+Crise d'asthme modérée.
+Allergie sans détresse respiratoire.
+
+Niveau 5 : Consultation non urgente
+Description :
+Situation médicale nécessitant une prise en charge, mais ne justifiant pas une intervention immédiate.
+Peut être orientée vers une consultation avec un médecin généraliste ou une visite programmée.
+Exemples :
+Symptômes bénins comme un rhume ou une grippe sans complication.
+Douleur légère ou modérée, contrôlable avec des analgésiques en vente libre.
+Plaie superficielle sans signe d'infection ou de complication.
+Ces niveaux de priorisation permettent de gérer efficacement les appels et de mobiliser les ressources en fonction de la gravité et de l'urgence de la situation. Qu'en penses-tu ?
+
+Niveau 1 : Urgence vitale
+Niveau 2 : Urgence absolue
+Niveau 3 : Urgence relative
+Niveau 4 : Consultation médicale urgente
+Niveau 5 : Consultation non urgente

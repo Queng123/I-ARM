@@ -5,8 +5,11 @@ import logging
 import streamlit as st
 from dotenv import load_dotenv
 from audiorecorder import audiorecorder
+import speech_recognition as sr
 
 from prompt import ask_question
+from prompt import sentiment_analysis
+from prompt import categorize_urgency
 
 # Charge les variables d'environnement
 load_dotenv()
@@ -37,12 +40,20 @@ if len(audio) > 0:
     # To get audio properties, use pydub AudioSegment properties:
     st.write(f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
 
+# Charger l'audio
+# r = sr.Recognizer()
+# with sr.AudioFile('audio.wav') as source:
+#     audio_data = r.record(source)
+#    text = r.recognize_google(audio_data, language='fr-FR')  # Utilisez 'en-US' pour l'anglais
+#   st.write(text)
+
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "assistant",
          "content": "Posez-moi des questions !"}]
 
-
+if "sentiment_history" not in st.session_state.keys():
+    st.session_state.sentiment_history = []
 
 # Display chat messages
 for message in st.session_state.messages:
@@ -51,13 +62,14 @@ for message in st.session_state.messages:
             st.markdown("**Ma réponse :**")
             st.write(message["content"])
 
-            st.markdown("**📚 Documents utilisés :**")
-            unique_sources = set()
-            for source in message["sources"]:
-                unique_sources.add((source.metadata['source'], source.metadata['page']))
+            with st.expander("📚 Documents utilisés"):
+                unique_sources = set()
 
-            for source in unique_sources:
-                st.markdown(f"* Doc: {source[0]}, Page: {source[1]}")
+                for source in message["sources"]:
+                    unique_sources.add((source.metadata['source'], source.metadata['page']))
+
+                for source in unique_sources:
+                    st.markdown(f"* Doc: {source[0]}, Page: {source[1]}")
         else:
             st.write(message["content"])
 
@@ -72,12 +84,17 @@ if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant", avatar="images/assistant.png"):
         with st.spinner("Réponse en cours de génération..."):
             response, sources = ask_question(prompt)
+            sentiment = sentiment_analysis(prompt)
+            st.session_state.sentiment_history.append(sentiment)
+            urgency = categorize_urgency(prompt)
             st.markdown("**Ma réponse :**")
             st.write(response)
-            st.markdown("**📚 Documents utilisés :**")
-            unique_sources = set()
-            for source in sources:
-                unique_sources.add((source.metadata['source'], source.metadata['page']))
+            st.info(f"Sentiment détecté: {sentiment}")
+            st.info(f"Urgence détectée: {urgency}")
+            with st.expander("📚 Documents utilisés"):
+                unique_sources = set()
+                for source in sources:
+                    unique_sources.add((source.metadata['source'], source.metadata['page']))
 
             for source in unique_sources:
                 st.markdown(f"* Doc: {source[0]}, Page: {source[1]}")
