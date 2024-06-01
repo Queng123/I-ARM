@@ -65,6 +65,7 @@ docker run -p 8080:8501 -v $(pwd)/database:/app/database -v $(pwd)/documents:/ap
 
 ## Upgrade to python 3.12
 
+```
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
 sudo apt install python3.12
@@ -72,4 +73,4 @@ pip3.12 install -r requirements.txt
 export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 python3.12 ingest.py 
 streamlit run chat.py
-
+```
