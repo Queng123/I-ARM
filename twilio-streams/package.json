@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@google-cloud/speech": "^6.6.0",
+    "express": "^4.19.2",
+    "ws": "^8.17.0"
+  }
+}
