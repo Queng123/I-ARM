@@ -163,5 +163,4 @@ cython_debug/
 .vscode/
 
 # Project specific
-documents/
 database/
