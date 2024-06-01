@@ -10,8 +10,24 @@ from prompt import ask_question
 from prompt import sentiment_analysis
 from prompt import categorize_urgency
 
+from gtts import gTTS
+import pygame
+from datetime import datetime
+
 # Charge les variables d'environnement
 load_dotenv()
+pygame.mixer.init()
+
+def play_mp3(file_path):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+
+def parler(texte):
+    nom_fichier = f"audio/response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
+    tts = gTTS(texte, lang='fr', slow=False)
+    tts.save(nom_fichier)
+    play_mp3(nom_fichier)
 
 # Configure le logger
 logging.basicConfig(format='%(levelname)s: %(message)s',
@@ -45,10 +61,12 @@ if len(audio) > 0:
 if st.button('Clear cache'):
     st.session_state.clear()
 
+intro = "Bonjour, ici le Samu, Je suis un chatbot et je suis là pour vous aider. Est-ce une urgence vitale ?"
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "assistant",
-         "content": "Bonjour, ici le Samu, Je suis un chatbot et je suis là pour vous aider. Est-ce une urgence vitale ?"}]
+         "content": intro}]
+    parler(intro)
 
 if "sentiment_history" not in st.session_state.keys():
     st.session_state.sentiment_history = []
@@ -87,6 +105,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
             response, sources = ask_question(prompt, urgency)
             st.markdown("**Ma réponse :**")
             st.write(response)
+            parler(response)
             st.info(f"Sentiment détecté: {sentiment}")
             st.info(f"Urgence détectée: {urgency}")
             with st.expander("📚 Documents utilisés"):
