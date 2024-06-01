@@ -82,10 +82,10 @@ if prompt := st.chat_input():
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant", avatar="images/assistant.png"):
         with st.spinner("Réponse en cours de génération..."):
-            response, sources = ask_question(prompt)
             sentiment = sentiment_analysis(prompt)
             st.session_state.sentiment_history.append(sentiment)
             urgency = categorize_urgency(prompt)
+            response, sources = ask_question(prompt, urgency)
             st.markdown("**Ma réponse :**")
             st.write(response)
             st.info(f"Sentiment détecté: {sentiment}")

@@ -52,8 +52,11 @@ MR9. clôture du dossier médical.
 MR10. clôture du dossier de régulation médicale (DRM).
 Introduit toi de la manière suivante : Bonjour, ici le Samu, Je suis là pour vous aider. Où vous trouvez-vous ?
 Ne pose pas des questions sur plusieurs thématiques en même temps pour rendre la discussion plus naturelle.
+Si l'urgence est avéré, transfert directement l'appelant au médecin régulateur.
 Tu ne doit JAMAIS dire « mais il est important de noter que » ou « en tant que modèle de langage d'IA ».
-
+===========
+Niveau d'urgence :
+{urgency}
 ===========
 CONTEXTE:
 {context}
@@ -79,19 +82,19 @@ def format_context(results):
         context += f"{result.page_content}\n"
     return context
 
-def ask_question(question):
+def ask_question(question, urgency):
     """Poser une question au modèle."""
 
     # Cherche des chunks de textes similaires à la question
     results = DB.as_retriever(search_type="similarity", search_kwargs={'k': 5}).get_relevant_documents(query=question)
 
-    logging.debug("Sources: %s", results)
+    logging.info("Sources: %s", results)
 
     # Formate le contexte à partir des résultats
     context = format_context(results)
 
     # Constitue la séquence de chat avec le conditionnement du bot et la question de l'utilisateur
-    system_message_prompt = SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT)
+    system_message_prompt = SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT.format(urgency=urgency, context=context))
     human_message_prompt = HumanMessagePromptTemplate.from_template("QUESTION: {question}")
     chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
 
@@ -99,7 +102,7 @@ def ask_question(question):
     messages = message_history + chat_prompt.format_prompt(context=context, question=question).to_messages()
 
     # Log messages pour débogage
-    logging.debug("Messages: %s", messages)
+    logging.info("Messages: %s", messages)
 
     # Pose la question au LLM
     response = CHAT(messages).content
