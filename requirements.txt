@@ -1,0 +1,14 @@
+# utilitaires
+python-dotenv
+# manipulation des contenus
+pypdf
+# manipulation des embeddings
+langchain
+langchain-community
+tiktoken
+# base de données d'embeddings
+chromadb
+# manipulation des modèles
+openai
+# interface
+streamlit
