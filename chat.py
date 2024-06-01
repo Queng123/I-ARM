@@ -5,7 +5,6 @@ import logging
 import streamlit as st
 from dotenv import load_dotenv
 from audiorecorder import audiorecorder
-import speech_recognition as sr
 
 from prompt import ask_question
 from prompt import sentiment_analysis
@@ -96,7 +95,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
                 for source in sources:
                     unique_sources.add((source.metadata['source'], source.metadata['page']))
 
-            for source in unique_sources:
-                st.markdown(f"* Doc: {source[0]}, Page: {source[1]}")
+                for source in unique_sources:
+                    st.markdown(f"* Doc: {source[0]}, Page: {source[1]}")
     message = {"role": "assistant", "content": response, "sources": sources}
     st.session_state.messages.append(message)
