@@ -8,7 +8,7 @@ app = Flask(__name__)
 pygame.mixer.init()
 
 # Liste pour stocker les messages
-messages = []
+messages = ["Bonjour, ici le Samu, Je suis un assistant IA et je suis là pour vous aider. Est-ce une urgence vitale ?"]
 
 def play_mp3(file_path):
     pygame.mixer.init()
