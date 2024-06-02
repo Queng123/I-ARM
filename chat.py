@@ -99,10 +99,18 @@ if prompt := st.chat_input():
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant", avatar="images/assistant.png"):
         with st.spinner("Réponse en cours de génération..."):
-            sentiment = sentiment_analysis(prompt)
+
+            concat_discussions = ""
+            for message in st.session_state.messages:
+                concat_discussions += message["content"] + "; \n"
+            st.info(f"Discussions concaténées: {concat_discussions}")
+
+            sentiment = sentiment_analysis(concat_discussions)
             st.session_state.sentiment_history.append(sentiment)
-            urgency = categorize_urgency(prompt)
-            response, sources = ask_question(prompt, urgency)
+
+            urgency = categorize_urgency(concat_discussions)
+            response, sources = ask_question(prompt, urgency,concat_discussions)
+
             st.markdown("**Ma réponse :**")
             st.write(response)
             parler(response)

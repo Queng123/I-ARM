@@ -23,8 +23,13 @@ logging.basicConfig(format='%(levelname)s: %(message)s',
 
 # template du prompt Système
 SYSTEM_PROMPT = """
-Tu es un ARM. Assistant médical de régulation. Ton rôle est de répondre au mieux aux urgences des demandeurs.
-Voici tes missions :
+Tu es un chatbot ARM. Assistant médical de régulation. Ton rôle est de pré-qualifier les appels entrants pour le SAMU pour faciliter le travail des ARM.
+Tu dois IMPERATIVEMENT transférer l'appel vers un ARM s'il s'agit d'une urgence (niveau 1 : Urgence vitale / niveau 2 : Urgence absolue)
+Une fois le l'absence d'urgence avérée, tu peux consolider les informations suivantes dans cet ordre de priorité : Adresse complète, avec des détails spécifiques si nécessaire (étage, appartement, points de repère); Numéro de téléphone de rappel ; Nature de l'urgence ; État de la personne en détresse ; Antécédents médicaux ; Identité et âge de la personne concernée ; Circonstances spécifiques.
+Ne pose pas des questions sur plusieurs thématiques en même temps pour rendre la discussion plus naturelle.
+Parle dans la langue de l'appelant
+Tu ne doit JAMAIS dire « mais il est important de noter que » ou « en tant que modèle de langage d'IA ».
+Pour information voici les missions de l'ARM :
 RM1 . recueil des données administratives de l'appelant: numéro de téléphone, adresse complète, identité (appelant,
 patient) ...
 ARM2. écoute de la demande, dialogue empathique et qualification de l'appel.
@@ -53,19 +58,16 @@ MR8. si besoin: préparation de l'accueil dans un établissement de soins; recue
 du libre choix du patient.
 ARM10. clôture du dossier administratif.
 MR9. clôture du dossier médical.
-MR10. clôture du dossier de régulation médicale (DRM).
-Si l'urgence est avéré (niveau 1 vitale 2 absolue), transfert directement l'appelant au médecin régulateur.
-Assure toi de récupérer les informations suivantes si cela n'est pas urgence : Adresse complète, avec des détails spécifiques si nécessaire (étage, appartement, points de repère); Numéro de téléphone de rappel ; Nature de l'urgence ; État de la personne en détresse ; Antécédents médicaux ; Identité et âge de la personne concernée ; Circonstances spécifiques.
-Ne pose pas des questions sur plusieurs thématiques en même temps pour rendre la discussion plus naturelle.
-Il n'est pas nécessaire de te réintroduire à chaque fois. Essai d'avoir une conversation la plus naturelle et fluide possible.
-Parle dans la langue de l'appelant
-Tu ne doit JAMAIS dire « mais il est important de noter que » ou « en tant que modèle de langage d'IA ».
+MR10. clôture du dossier de régulation médicale (DRM).».
 ===========
 Niveau d'urgence :
 {urgency}
 ===========
-CONTEXTE:
+Contexte:
 {context}
+===========
+Historique réponses:
+{reponses}
 ===========
 """
 
@@ -78,9 +80,6 @@ DB = Chroma(persist_directory=constants.DATABASE_DIR,
                 openai_api_base=constants.OPENAI_API_BASE,
                 openai_api_version=constants.OPENAI_API_VERSION))
 
-# Liste pour stocker l'historique des messages
-message_history = []
-
 def format_context(results):
     """Formate les résultats de la recherche pour les inclure dans le contexte."""
     context = ""
@@ -88,7 +87,7 @@ def format_context(results):
         context += f"{result.page_content}\n"
     return context
 
-def ask_question(question, urgency):
+def ask_question(question, urgency, reponse_history):
     """Poser une question au modèle."""
 
     # Cherche des chunks de textes similaires à la question
@@ -104,22 +103,18 @@ def ask_question(question, urgency):
     context = format_context(results)
 
     # Constitue la séquence de chat avec le conditionnement du bot et la question de l'utilisateur
-    system_message_prompt = SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT.format(urgency=urgency, context=context))
+    system_message_prompt = SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT.format(urgency=urgency, context=context, reponses=reponse_history))
     human_message_prompt = HumanMessagePromptTemplate.from_template("QUESTION: {question}")
     chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
 
     # Ajouter l'historique des messages
-    messages = message_history + chat_prompt.format_prompt(context=context, question=question).to_messages()
+    messages = chat_prompt.format_prompt(context=context, question=question).to_messages()
 
     # Log messages pour débogage
     logging.info("Messages: %s", messages)
 
     # Pose la question au LLM
     response = CHAT(messages).content
-
-    # Ajouter la question et la réponse à l'historique
-    message_history.extend(messages)
-    message_history.append(AIMessage(content=response))
     logging.info("Réponse: %s", response)
     return response, results
 

@@ -17,7 +17,7 @@ MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-4o")
 """Nom du modèle à utiliser"""
 
 # Hyperparamètres
-TEMPERATURE = float(os.environ.get("TEMPERATURE", 0.5))
+TEMPERATURE = float(os.environ.get("TEMPERATURE", 0.2))
 """Température du modèle"""
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
