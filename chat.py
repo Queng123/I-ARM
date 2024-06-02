@@ -9,6 +9,7 @@ from audiorecorder import audiorecorder
 from prompt import ask_question
 from prompt import sentiment_analysis
 from prompt import categorize_urgency
+from prompt import summarize_call_informations
 
 from gtts import gTTS
 import pygame
@@ -103,19 +104,20 @@ if st.session_state.messages[-1]["role"] != "assistant":
             concat_discussions = ""
             for message in st.session_state.messages:
                 concat_discussions += message["content"] + "; \n"
-            st.info(f"Discussions concaténées: {concat_discussions}")
 
             sentiment = sentiment_analysis(concat_discussions)
             st.session_state.sentiment_history.append(sentiment)
 
             urgency = categorize_urgency(concat_discussions)
             response, sources = ask_question(prompt, urgency,concat_discussions)
+            summary_of_information = summarize_call_informations(concat_discussions)
 
             st.markdown("**Ma réponse :**")
             st.write(response)
             parler(response)
             st.info(f"Sentiment détecté: {sentiment}")
             st.info(f"Urgence détectée: {urgency}")
+            st.info(f"Résumé des informations collectés: {summary_of_information}")
             with st.expander("📚 Documents utilisés"):
                 unique_sources = set()
                 for source in sources:

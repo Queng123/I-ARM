@@ -161,7 +161,23 @@ def categorize_urgency(question):
     logging.info("Urgency response: %s", response)
     return response
 
+def summarize_call_informations(question):
+    """Résumer les informations d'un appel."""
 
+    system_message_prompt = SystemMessagePromptTemplate.from_template(
+        "Vous êtes un modèle de langage formé par OpenAI. Votre tâche est de résumer les informations d'un appel. En mettant en avant les informations suivantes : Adresse complète, Numéro de téléphone de rappel, Nature de l'urgence, État de la personne en détresse, Antécédents médicaux, Identité et âge de la personne concernée, Circonstances spécifiques.")
+    human_message_prompt = HumanMessagePromptTemplate.from_template(
+        "{question}")
+    chat_prompt = ChatPromptTemplate.from_messages(
+        [system_message_prompt, human_message_prompt]
+    )
+    messages = chat_prompt.format_prompt(
+        question=question
+    ).to_messages()
+
+    # Pose la question au LLM
+    response = CHAT(messages).content
+    return response
 
 if __name__ == "__main__":
     print("""
