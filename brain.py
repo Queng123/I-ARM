@@ -7,6 +7,9 @@ from datetime import datetime
 app = Flask(__name__)
 pygame.mixer.init()
 
+# Liste pour stocker les messages
+messages = []
+
 def play_mp3(file_path):
     pygame.mixer.init()
     pygame.mixer.music.load(file_path)
@@ -24,14 +27,21 @@ def ask():
     question = data.get('question')
     sentiment = sentiment_analysis(question)
     urgency = categorize_urgency(question)
-    response, sources = ask_question(question, urgency,"")
-    parler(response)
+    response, sources = ask_question(question, urgency,messages)
+    messages.append(response)
+    # parler(response)
     return jsonify({
         'response': response,
         'sentiment': sentiment,
         'urgency': urgency,
         'sources': [(source.metadata['source'], source.metadata['page']) for source in sources]
     })
+
+@app.route('/messages', methods=['DELETE'])
+def delete_messages():
+    # Vider la liste des messages
+    messages.clear()
+    return jsonify({'message': 'Messages deleted'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
