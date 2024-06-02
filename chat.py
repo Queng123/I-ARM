@@ -61,7 +61,7 @@ if len(audio) > 0:
 if st.button('Clear cache'):
     st.session_state.clear()
 
-intro = "Bonjour, ici le Samu, Je suis un chatbot et je suis là pour vous aider. Est-ce une urgence vitale ?"
+intro = "Bonjour, ici le Samu, Je suis un assistant IA et je suis là pour vous aider. Est-ce une urgence vitale ?"
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "assistant",

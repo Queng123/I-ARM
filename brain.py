@@ -24,7 +24,7 @@ def ask():
     question = data.get('question')
     sentiment = sentiment_analysis(question)
     urgency = categorize_urgency(question)
-    response, sources = ask_question(question, urgency)
+    response, sources = ask_question(question, urgency,"")
     parler(response)
     return jsonify({
         'response': response,
