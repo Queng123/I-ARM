@@ -35,31 +35,13 @@ logging.basicConfig(format='%(levelname)s: %(message)s',
                     encoding='utf-8', level=logging.INFO)
 
 # Configuration de l'application
-st.set_page_config(layout="wide", page_title="POC")
+st.set_page_config(
+     page_title='🚑Pimpon🚨',
+     layout="wide",
+     initial_sidebar_state="expanded",
+)
 
-# Titre de l'application
-st.title("👨‍💼👩‍💼 ARM 💬")
-st.divider()
-
-
-audio = audiorecorder("Click to record", "Click to stop recording",pause_prompt="", show_visualizer=True, key=None)
-
-if len(audio) > 0:
-    st.audio(audio.export().read())
-
-    audio.export("audio.wav", format="wav")
-
-    # To get audio properties, use pydub AudioSegment properties:
-    st.write(f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
-
-# Charger l'audio
-# r = sr.Recognizer()
-# with sr.AudioFile('audio.wav') as source:
-#     audio_data = r.record(source)
-#    text = r.recognize_google(audio_data, language='fr-FR')  # Utilisez 'en-US' pour l'anglais
-#   st.write(text)
-
-if st.button('Clear cache'):
+if st.sidebar.button('Nouvelle conversation'):
     st.session_state.clear()
 
 intro = "Bonjour, ici le Samu, Je suis un assistant IA et je suis là pour vous aider. Est-ce une urgence vitale ?"
@@ -115,9 +97,11 @@ if st.session_state.messages[-1]["role"] != "assistant":
             st.markdown("**Ma réponse :**")
             st.write(response)
             parler(response)
-            st.info(f"Sentiment détecté: {sentiment}")
-            st.info(f"Urgence détectée: {urgency}")
-            st.info(f"Résumé des informations collectés: {summary_of_information}")
+
+            st.sidebar.success(f"{summary_of_information}")
+            st.sidebar.info(f"Urgence détectée: {urgency}")
+            st.sidebar.info(f"Sentiment détecté: {sentiment}")
+
             with st.expander("📚 Documents utilisés"):
                 unique_sources = set()
                 for source in sources:

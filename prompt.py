@@ -24,7 +24,7 @@ logging.basicConfig(format='%(levelname)s: %(message)s',
 # template du prompt Système
 SYSTEM_PROMPT = """
 Tu es un chatbot ARM. Assistant médical de régulation. Ton rôle est de pré-qualifier les appels entrants pour le SAMU pour faciliter le travail des ARM.
-Tu dois IMPERATIVEMENT transférer l'appel vers un ARM s'il s'agit d'une urgence (niveau 1 : Urgence vitale / niveau 2 : Urgence absolue)
+Tu dois IMPERATIVEMENT transférer l'appel vers un ARM s'il s'agit d'une urgence (niveau 1 : Urgence vitale / niveau 2 : Urgence absolue) en expliquant la qualification de l'urgence
 Une fois le l'absence d'urgence avérée, tu peux consolider les informations suivantes dans cet ordre de priorité : Adresse complète, avec des détails spécifiques si nécessaire (étage, appartement, points de repère); Numéro de téléphone de rappel ; Nature de l'urgence ; État de la personne en détresse ; Antécédents médicaux ; Identité et âge de la personne concernée ; Circonstances spécifiques.
 Ne pose pas des questions sur plusieurs thématiques en même temps pour rendre la discussion plus naturelle.
 Parle dans la langue de l'appelant
@@ -124,7 +124,9 @@ def sentiment_analysis(question):
     # Constitue la séquence de chat avec le conditionnement du bot et la question
     # de l'utilisateur
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "Vous êtes un modèle de langage formé par OpenAI. Votre tâche est d'analyser le sentiment du texte suivant :")
+        """Vous êtes un modèle de langage formé par OpenAI.
+        Concentre ton analyse sur l'utilisateur qui appelle le SAMU
+        Votre tâche est d'analyser le sentiment du texte suivant :""")
     human_message_prompt = HumanMessagePromptTemplate.from_template(
         "{question}")
     chat_prompt = ChatPromptTemplate.from_messages(
@@ -144,7 +146,11 @@ def categorize_urgency(question):
     # Constitue la séquence de chat avec le conditionnement du bot et la question
     # de l'utilisateur
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "Vous êtes un modèle de langage formé par OpenAI. Votre tâche est d'analyser le sentiment pour déterminer le niveau d'urgence sur une échelle de 1 à 5 : Niveau 1 : Urgence vitale, Niveau 2 : Urgence absolue, Niveau 3 : Urgence relative, Niveau 4 : Consultation médicale urgente, Niveau 5 : Consultation non urgente, Niveau 6 : Fausse alerte. Commence ta réponse par le niveau identifié")
+        """Vous êtes un modèle de langage formé par OpenAI.
+        Votre tâche est d'analyser le sentiment pour déterminer le niveau d'urgence sur une échelle de 1 à 5 :
+        Niveau 1 : Urgence vitale, Niveau 2 : Urgence absolue, Niveau 3 : Urgence relative, Niveau 4 : Consultation médicale urgente, Niveau 5 : Consultation non urgente, Niveau 6 : Fausse alerte.
+        Concentre ton analyse sur l'utilisateur qui appelle le SAMU
+        Commence ta réponse par le niveau identifié""")
     human_message_prompt = HumanMessagePromptTemplate.from_template(
         "{question}")
     chat_prompt = ChatPromptTemplate.from_messages(
@@ -165,7 +171,10 @@ def summarize_call_informations(question):
     """Résumer les informations d'un appel."""
 
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "Vous êtes un modèle de langage formé par OpenAI. Votre tâche est de résumer les informations d'un appel. En mettant en avant les informations suivantes : Adresse complète, Numéro de téléphone de rappel, Nature de l'urgence, État de la personne en détresse, Antécédents médicaux, Identité et âge de la personne concernée, Circonstances spécifiques.")
+        """Vous êtes un modèle de langage formé par OpenAI. Votre tâche est de résumer les informations d'un appel.
+        En mettant en avant les informations suivantes : Adresse complète, Numéro de téléphone de rappel, Nature de l'urgence, État de la personne en détresse, Antécédents médicaux, Identité et âge de la personne concernée, Circonstances spécifiques.
+        En l'absence d'information, dit juste : Aucune information collectée.
+        Fait une réponse sous format liste à puce""")
     human_message_prompt = HumanMessagePromptTemplate.from_template(
         "{question}")
     chat_prompt = ChatPromptTemplate.from_messages(

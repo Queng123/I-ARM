@@ -120,7 +120,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+test-gladia/.env
 .venv
 env/
 venv/
