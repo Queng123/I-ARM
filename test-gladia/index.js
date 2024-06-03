@@ -65,7 +65,7 @@ ws.on("message", async (event) => {
         const data = {
             question: totalTranscript
         }
-        await fetch("https://fcf9-85-208-217-85.ngrok-free.app/ask", {
+        await fetch(process.env.NGROK_URL + "/ask", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
