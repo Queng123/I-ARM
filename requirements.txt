@@ -13,3 +13,4 @@ openai
 # interface
 streamlit
 streamlit-audiorecorder
+flask
